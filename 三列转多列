@@ -67,3 +67,62 @@ Sub 三列转多列()
     myr.Offset(1, 1).Resize(dy.Count, dx.Count) = mc
 
 End Sub
+
+
+
+
+Sub 转表()
+
+    '2020-10-30 21:30:30
+
+    Dim r As Long, myr As Range, n As Long, mb(), i As Long, k As Long, m As Long
+
+    r = Range("E" & Rows.Count).End(xlUp).Row
+
+    n = Application.WorksheetFunction.Max(Range("F2:F" & r)) - 1
+
+    Set myr = Range("B2:E" & r)
+
+    ReDim mb(1 To r, 1 To n + 4)
+
+    k = 0
+
+    For i = 1 To r - 1
+
+        If myr.Cells(i, 4).Value = "户主" Then
+
+            k = k + 1
+
+            mb(k, 1) = k
+
+            mb(k, 2) = myr.Cells(i, 1).Value
+
+            mb(k, 3) = myr.Cells(i, 2).Value
+
+            mb(k, 4) = myr.Cells(i, 3).Value
+
+            m = 4
+
+        Else
+
+            m = m + 1
+
+            mb(k, m) = myr.Cells(i, 2).Value
+
+        End If
+
+    Next i
+
+    Worksheets("Sheet2").UsedRange.ClearContents
+
+    Worksheets("Sheet2").Range("A1:D1") = Array("序号", "整户编号", "户主身份证号", "户主")
+
+    For i = 5 To n + 4
+
+        Worksheets("Sheet2").Cells(1, i).Value = "家庭成员" & i - 4 & "身份证号"
+
+    Next i
+
+    Worksheets("Sheet2").Range("A2").Resize(k, n + 4) = mb
+
+End Sub
