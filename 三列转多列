@@ -1,0 +1,69 @@
+Sub 三列转多列()
+
+    '2020-10-22 21:22:57
+
+    Dim mb(), dx As Object, dy As Object, i As Long, myr As Range
+
+    Dim mx, my, j As Long, mc(), k As Long
+
+    mb = Selection
+
+    On Error Resume Next
+
+    Set dy = CreateObject("scripting.dictionary")
+
+    For i = 2 To UBound(mb, 1)
+
+        dy.Add mb(i, 1), i
+
+    Next i
+
+    Set dx = CreateObject("scripting.dictionary")
+
+    For i = 2 To UBound(mb, 1)
+
+        dx.Add mb(i, 2), i
+
+    Next i
+
+    my = dy.keys
+
+    mx = dx.keys
+
+    ReDim mc(1 To dy.Count, 1 To dx.Count)
+
+    For i = 0 To dy.Count - 1
+
+        For j = 0 To dx.Count - 1
+
+            For k = 2 To UBound(mb, 1)
+
+                If my(i) = mb(k, 1) And mx(j) = mb(k, 2) Then
+
+                    mc(i + 1, j + 1) = mb(k, 3)
+
+                    Exit For
+
+                Else
+
+                    mc(i + 1, j + 1) = ""
+
+                End If
+
+            Next k
+
+        Next j
+
+    Next i
+
+    Set myr = Application.InputBox(Prompt:="选择输出转换表数据的一个单元格", Type:=8)
+
+    myr.Value = "         " & mb(1, 2) & vbLf & "     " & mb(1, 3) & vbLf & mb(1, 1)
+
+    myr.Offset(0, 1).Resize(1, dx.Count) = dx.keys
+
+    myr.Offset(1, 0).Resize(dy.Count, 1) = WorksheetFunction.Transpose(dy.keys)
+
+    myr.Offset(1, 1).Resize(dy.Count, dx.Count) = mc
+
+End Sub
